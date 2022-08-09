@@ -64,5 +64,43 @@ describe(
                 assert.equal(accounts[0], maneger);
             }
         );
+
+        it(
+            'Allow people to contribute money and marks them as approvers',
+            async () => {
+                await campaign.methods.Contribute()
+                    .send(
+                        {
+                            from    : accounts[1],
+                            value   : '200'
+                        }
+                    );
+                
+                const isContributor = await campaign.methods
+                    .approvers(accounts[1])
+                    .call(); 
+                
+                assert(isContributor);
+            }
+        );
+
+        it(
+            'Requires a mininmum amount of contribution',
+            async () => {
+                try {
+                    await campaign.methods.Contribute()
+                        .send(
+                            {
+                                from    : accounts[1],
+                                value   : '5 '
+                            }
+                        );
+                    assert(false);
+                } 
+                catch (error) {
+                    assert(error);
+                }
+            }
+        )
     }
 );
